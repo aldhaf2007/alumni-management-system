@@ -1,0 +1,44 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Add User | ABC University{% endblock %}
+{% block page_heading %}Add User{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Add New User</h2>
+    <a href="{{ url_for('admin.manage_users') }}" class="btn btn-outline" style="float: right; margin-top: -40px;">Back to Users</a>
+</div>
+
+<div class="card" style="padding: 2.5rem; max-width: 600px; margin: 0 auto;">
+    <form method="POST" action="{{ url_for('admin.add_user') }}">
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label for="role">Role</label>
+            <select id="role" name="role" required>
+                <option value="student">Student</option>
+                <option value="alumni">Alumni</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status" required>
+                <option value="Approved">Approved</option>
+                <option value="Pending">Pending</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Create User</button>
+    </form>
+</div>
+{% endblock %}

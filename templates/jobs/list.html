@@ -1,0 +1,43 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Job & Internship Board | ABC University{% endblock %}
+{% block page_heading %}Career Board{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Career Opportunities</h2>
+    <p>Explore jobs and internships posted by our alumni network.</p>
+    {% if current_user.role != 'student' %}
+        <a href="{{ url_for('jobs.post_job') }}" class="btn btn-primary" style="float:right; margin-top:-40px;">Post an Opportunity</a>
+    {% endif %}
+</div>
+
+<div class="directory-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
+    {% for job in jobs %}
+    <div class="card" style="padding: 1.5rem;">
+        <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">{{ job.title }}</h3>
+        <p><strong>Company:</strong> {{ job.company }}</p>
+        <p><strong>Location:</strong> {{ job.location }}</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem;" class="text-muted">{{ job.description }}</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;" class="text-muted">Posted by: {{ job.poster.name }}</p>
+        
+        <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+            {% if current_user.role == 'student' or current_user.role == 'alumni' %}
+                {% if current_user.id != job.posted_by %}
+                <a href="{{ url_for('jobs.apply_job', job_id=job.id) }}" class="btn btn-primary" style="font-size: 0.9rem;">Apply Now</a>
+                {% endif %}
+            {% endif %}
+            
+            {% if current_user.id == job.posted_by or current_user.role == 'admin' %}
+            <a href="{{ url_for('jobs.view_applications', job_id=job.id) }}" class="btn btn-outline" style="font-size: 0.9rem;">View Applications</a>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: #fff; border-radius: 8px; border: 1px dashed #cbd5e1;">
+        <i class="fas fa-briefcase" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+        <h3 style="color: var(--text-muted); margin-bottom: 0.5rem;">No Opportunities Yet</h3>
+        <p class="text-muted">Check back later or post the first job for the network!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Post an Opportunity | ABC University{% endblock %}
+{% block page_heading %}Post Job/Internship{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Post a Job or Internship</h2>
+    <a href="{{ url_for('jobs.list_jobs') }}" class="btn btn-outline" style="float: right;">Back to Jobs</a>
+    <div style="clear: both;"></div>
+</div>
+
+<div class="card" style="padding: 2.5rem; max-width: 700px; margin: 0 auto;">
+    <form method="POST" action="{{ url_for('jobs.post_job') }}">
+        <div class="form-group">
+            <label for="title">Job Title</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="company">Company Name</label>
+            <input type="text" id="company" name="company" required>
+        </div>
+        <div class="form-group">
+            <label for="location">Location (City or Remote)</label>
+            <input type="text" id="location" name="location" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Job Description & Requirements</label>
+            <textarea id="description" name="description" rows="6" required></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">Post Opportunity</button>
+    </form>
+</div>
+{% endblock %}

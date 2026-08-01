@@ -1,0 +1,30 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Student Dashboard | ABC Alumni{% endblock %}
+{% block page_heading %}Student Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Welcome, {{ current_user.name }}</h2>
+    <p>Your Student Dashboard</p>
+</div>
+
+<div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+    <div class="glass" style="padding: 2rem;">
+        <h3>Alumni Directory</h3>
+        <p class="text-muted" style="margin-bottom: 1rem;">Find alumni for mentorship and career guidance.</p>
+        <a href="{{ url_for('student.directory') }}" class="btn btn-primary">Browse Alumni</a>
+    </div>
+    
+    <div class="card" style="padding: 2rem;">
+        <h3>Jobs & Internships</h3>
+        <p class="text-muted" style="margin-bottom: 1rem;">Apply to opportunities posted by our alumni network.</p>
+        <a href="{{ url_for('jobs.list_jobs') }}" class="btn btn-outline">View Jobs</a>
+    </div>
+    
+    <div class="card" style="padding: 2rem;">
+        <h3>Upcoming Events</h3>
+        <p class="text-muted" style="margin-bottom: 1rem;">Register for webinars, guest lectures, and more.</p>
+        <a href="{{ url_for('events.list_events') }}" class="btn btn-outline">View Events</a>
+    </div>
+</div>
+{% endblock %}

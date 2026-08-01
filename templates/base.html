@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Alumni Portal{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand"><a href="{{ url_for('public.index') }}">ABC <span>University</span></a></div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('public.index') }}">Home</a></li>
+            {% if current_user.is_authenticated %}
+                {% if current_user.role == 'admin' %}
+                    <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+                {% elif current_user.role == 'alumni' %}
+                    <li><a href="{{ url_for('alumni.dashboard') }}">Dashboard</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('student.dashboard') }}">Dashboard</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('auth.logout') }}" class="btn btn-outline">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('auth.login') }}" class="btn btn-outline">Sign In</a></li>
+                <li><a href="{{ url_for('auth.register') }}" class="btn btn-primary">Alumni & Student Portal</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flashes">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Applications for {{ job.title }} | ABC University{% endblock %}
+{% block page_heading %}Job Applications{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Applications for: {{ job.title }}</h2>
+    <a href="{{ url_for('jobs.list_jobs') }}" class="btn btn-outline" style="float: right;">Back to Jobs</a>
+    <div style="clear: both;"></div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 1.5rem;">
+    {% for app in applications %}
+    <div class="card" style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">{{ app.applicant.name }}</h3>
+            <p style="font-size: 0.85rem;" class="text-muted">Applied on {{ app.applied_at.strftime('%B %d, %Y') }} | {{ app.applicant.email }}</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem;"><strong>Cover Letter:</strong><br/>{{ app.cover_letter }}</p>
+        </div>
+        <div>
+            <a href="{{ url_for('jobs.download_resume', filename=app.resume_link) }}" class="btn btn-primary" target="_blank"><i class="fas fa-file-pdf"></i> Download Resume</a>
+        </div>
+    </div>
+    {% else %}
+    <p class="text-muted text-center">No applications have been received yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

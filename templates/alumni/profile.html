@@ -1,0 +1,72 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Update Profile | ABC Alumni{% endblock %}
+{% block page_heading %}My Profile{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Update Profile</h2>
+    <a href="{{ url_for('alumni.dashboard') }}" class="btn btn-outline" style="float: right;">Back to Dashboard</a>
+    <div style="clear: both;"></div>
+</div>
+
+<div class="glass" style="padding: 2rem; max-width: 800px; margin: 0 auto;">
+    <form method="POST" action="{{ url_for('alumni.profile') }}">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="batch">Batch (Year of Graduation)</label>
+                <select id="batch" name="batch" required>
+                    <option value="" disabled {% if not profile.batch %}selected{% endif %}>Select Batch</option>
+                    {% for year in range(1990, 2030) %}
+                        {% set batch_str = year|string + '-' + (year + 3)|string %}
+                        <option value="{{ batch_str }}" {% if profile.batch == batch_str %}selected{% endif %}>{{ batch_str }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="department">Department</label>
+                <select id="department" name="department" required>
+                    <option value="" disabled {% if not profile.department %}selected{% endif %}>Select Department</option>
+                    <optgroup label="Arts & Humanities">
+                        <option value="English" {% if profile.department == 'English' %}selected{% endif %}>English</option>
+                        <option value="History" {% if profile.department == 'History' %}selected{% endif %}>History</option>
+                        <option value="Economics" {% if profile.department == 'Economics' %}selected{% endif %}>Economics</option>
+                        <option value="Political Science" {% if profile.department == 'Political Science' %}selected{% endif %}>Political Science</option>
+                    </optgroup>
+                    <optgroup label="Science & IT">
+                        <option value="Computer Science" {% if profile.department == 'Computer Science' %}selected{% endif %}>Computer Science</option>
+                        <option value="Mathematics" {% if profile.department == 'Mathematics' %}selected{% endif %}>Mathematics</option>
+                        <option value="Physics" {% if profile.department == 'Physics' %}selected{% endif %}>Physics</option>
+                        <option value="Chemistry" {% if profile.department == 'Chemistry' %}selected{% endif %}>Chemistry</option>
+                    </optgroup>
+                    <optgroup label="Commerce & Business">
+                        <option value="Commerce (B.Com)" {% if profile.department == 'Commerce (B.Com)' %}selected{% endif %}>Commerce (B.Com)</option>
+                        <option value="Business Administration (BBA)" {% if profile.department == 'Business Administration (BBA)' %}selected{% endif %}>Business Administration (BBA)</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="company">Current Company</label>
+                <input type="text" id="company" name="company" value="{{ profile.company or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="designation">Designation</label>
+                <input type="text" id="designation" name="designation" value="{{ profile.designation or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="location">Location (City, Country)</label>
+                <input type="text" id="location" name="location" value="{{ profile.location or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="skills">Skills (comma separated)</label>
+                <input type="text" id="skills" name="skills" value="{{ profile.skills or '' }}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="bio">Short Bio</label>
+            <textarea id="bio" name="bio" rows="4">{{ profile.bio or '' }}</textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

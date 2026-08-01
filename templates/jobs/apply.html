@@ -1,0 +1,27 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Apply for {{ job.title }} | ABC University{% endblock %}
+{% block page_heading %}Apply for Job{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Apply: {{ job.title }}</h2>
+    <p>at {{ job.company }} ({{ job.location }})</p>
+    <a href="{{ url_for('jobs.list_jobs') }}" class="btn btn-outline" style="float: right; margin-top: -40px;">Back to Jobs</a>
+</div>
+
+<div class="card" style="padding: 2.5rem; max-width: 600px; margin: 0 auto;">
+    <form method="POST" action="{{ url_for('jobs.apply_job', job_id=job.id) }}" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="cover_letter">Cover Letter / Note</label>
+            <textarea id="cover_letter" name="cover_letter" rows="5" placeholder="Write a brief note to the poster..." required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="resume">Upload Resume (PDF only)</label>
+            <input type="file" id="resume" name="resume" accept="application/pdf" required style="padding: 0.5rem; border: 1px dashed #ccc; border-radius: 4px; display: block; width: 100%;">
+            <small class="text-muted">Max file size: 5MB</small>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">Submit Application</button>
+    </form>
+</div>
+{% endblock %}

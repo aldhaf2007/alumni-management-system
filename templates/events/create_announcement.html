@@ -1,0 +1,35 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Post Announcement | ABC University{% endblock %}
+{% block page_heading %}New Announcement{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Post a New Announcement</h2>
+    <a href="{{ url_for('events.list_announcements') }}" class="btn btn-outline" style="float: right;">Back to Announcements</a>
+    <div style="clear: both;"></div>
+</div>
+
+<div class="card" style="padding: 2.5rem; max-width: 600px; margin: 0 auto;">
+    <form method="POST" action="{{ url_for('events.create_announcement') }}">
+        <div class="form-group">
+            <label for="title">Headline</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="type">Category</label>
+            <select id="type" name="type" required>
+                <option value="News">Campus News</option>
+                <option value="Notice">Important Notice</option>
+                <option value="Placement">Placement Update</option>
+                <option value="Event Update">Event Update</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="content">Announcement Content</label>
+            <textarea id="content" name="content" rows="6" required></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">Post Announcement</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Analytics & Reports | ABC University{% endblock %}
+{% block page_heading %}Analytics & Reports{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Platform Analytics</h2>
+    <p class="text-muted">A high-level overview of engagement and demographics.</p>
+</div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+    <!-- Demographics Chart -->
+    <div class="card" style="padding: 1.5rem;">
+        <h3 style="text-align: center; margin-bottom: 1rem; color: var(--primary-color);">User Demographics</h3>
+        <canvas id="demographicsChart"></canvas>
+    </div>
+
+    <!-- Account Status Chart -->
+    <div class="card" style="padding: 1.5rem;">
+        <h3 style="text-align: center; margin-bottom: 1rem; color: var(--primary-color);">Account Statuses</h3>
+        <canvas id="statusChart"></canvas>
+    </div>
+
+    <!-- Engagement Metrics -->
+    <div class="card" style="padding: 1.5rem;">
+        <h3 style="text-align: center; margin-bottom: 1rem; color: var(--primary-color);">Engagement</h3>
+        <canvas id="engagementChart"></canvas>
+    </div>
+
+    <!-- Department Distribution -->
+    <div class="card" style="padding: 1.5rem;">
+        <h3 style="text-align: center; margin-bottom: 1rem; color: var(--primary-color);">Alumni by Department</h3>
+        <canvas id="deptChart"></canvas>
+    </div>
+</div>
+
+<script>
+    // Colors
+    const primary = '#0F2862';
+    const secondary = '#F9A01B';
+    const muted = '#cbd5e1';
+    const danger = '#dc3545';
+    const success = '#28a745';
+    const warning = '#ffc107';
+
+    // Demographics
+    const ctxDemo = document.getElementById('demographicsChart').getContext('2d');
+    new Chart(ctxDemo, {
+        type: 'pie',
+        data: {
+            labels: ['Alumni', 'Students', 'Admins'],
+            datasets: [{
+                data: {{ demographics|tojson }},
+                backgroundColor: [primary, secondary, muted],
+                borderWidth: 0
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    // Statuses
+    const ctxStatus = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+            labels: ['Approved', 'Pending', 'Rejected'],
+            datasets: [{
+                data: {{ statuses|tojson }},
+                backgroundColor: [success, warning, danger],
+                borderWidth: 0
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    // Engagement & Participation
+    const ctxEngage = document.getElementById('engagementChart').getContext('2d');
+    new Chart(ctxEngage, {
+        type: 'bar',
+        data: {
+            labels: ['Events Created', 'Event RSVPs', 'Jobs Posted', 'Job Applications'],
+            datasets: [{
+                label: 'Total Count',
+                data: {{ engagement|tojson }},
+                backgroundColor: [primary, success, secondary, warning],
+                borderRadius: 4
+            }]
+        },
+        options: { 
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    // Department Distribution
+    const ctxDept = document.getElementById('deptChart').getContext('2d');
+    new Chart(ctxDept, {
+        type: 'bar',
+        data: {
+            labels: {{ dept_labels|tojson }},
+            datasets: [{
+                label: 'Total Alumni',
+                data: {{ dept_data|tojson }},
+                backgroundColor: primary,
+                borderRadius: 4
+            }]
+        },
+        options: { 
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+</script>
+{% endblock %}
