@@ -9,7 +9,7 @@ def load_user(user_id):
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    role = db.Column(db.String(20), nullable=False) # 'admin', 'alumni', 'student'
+    role = db.Column(db.String(20), nullable=False) # 'admin', 'alumni'
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
@@ -34,6 +34,7 @@ class Profile(db.Model):
     location = db.Column(db.String(100), nullable=True)
     skills = db.Column(db.String(255), nullable=True)
     bio = db.Column(db.Text, nullable=True)
+    profile_picture = db.Column(db.String(255), nullable=True, default='default_avatar.png')
 
 # Association table for Event Registration (Many-to-Many)
 event_registrations = db.Table('event_registrations',
@@ -86,4 +87,27 @@ class Announcement(db.Model):
     type = db.Column(db.String(50), nullable=False) # 'News', 'Event', 'Placement', 'Notice'
     posted_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Feedback(db.Model):
+    __tablename__ = 'feedback'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    subject = db.Column(db.String(150), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    status = db.Column(db.String(20), default='Open') # 'Open', 'Resolved'
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User', backref=db.backref('feedbacks', lazy=True))
+
+class Report(db.Model):
+    __tablename__ = 'reports'
+    id = db.Column(db.Integer, primary_key=True)
+    reporter_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    reported_type = db.Column(db.String(50), nullable=False) # 'Job', 'Event', 'Announcement', 'User'
+    reported_id = db.Column(db.Integer, nullable=False)
+    reason = db.Column(db.Text, nullable=False)
+    status = db.Column(db.String(20), default='Pending') # 'Pending', 'Resolved'
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    reporter = db.relationship('User', backref=db.backref('reports_made', lazy=True))
 

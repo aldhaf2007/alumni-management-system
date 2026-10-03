@@ -1,5 +1,5 @@
 {% extends "base_dashboard.html" %}
-{% block title %}Admin Dashboard | ABC Alumni{% endblock %}
+{% block title %}Admin Dashboard | Aringar Anna College Alumni{% endblock %}
 {% block page_heading %}Admin Dashboard{% endblock %}
 
 {% block content %}
@@ -36,25 +36,52 @@
     <table class="data-table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
+                <th>Applicant</th>
+                <th>Batch & Dept</th>
+                <th>Current Role</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
             {% for user in pending_users %}
             <tr>
-                <td>{{ user.name }}</td>
-                <td>{{ user.email }}</td>
-                <td><span class="badge">{{ user.role|capitalize }}</span></td>
                 <td>
-                    <div class="action-buttons">
-                        <form method="POST" action="{{ url_for('admin.approve_user', user_id=user.id) }}" style="display:inline;">
-                            <button class="btn btn-primary" type="submit">Approve</button>
+                    <strong>{{ user.name }}</strong><br>
+                    <small class="text-muted">{{ user.email }}</small>
+                    {% if user.profile %}
+                    <details style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">
+                        <summary>View Full Profile</summary>
+                        <div style="padding: 0.5rem; background: rgba(255,255,255,0.5); border-radius: 4px; margin-top: 0.5rem;">
+                            <p><strong>Location:</strong> {{ user.profile.location or 'N/A' }}</p>
+                            <p><strong>Skills:</strong> {{ user.profile.skills or 'N/A' }}</p>
+                            <p><strong>Bio:</strong> {{ user.profile.bio or 'N/A' }}</p>
+                        </div>
+                    </details>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.profile %}
+                        <span class="badge">{{ user.profile.batch }}</span><br>
+                        <small>{{ user.profile.department }}</small>
+                    {% else %}
+                        <span class="text-muted">No details</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.profile and user.profile.company %}
+                        {{ user.profile.designation }}<br>
+                        <small class="text-muted">@ {{ user.profile.company }}</small>
+                    {% else %}
+                        <span class="text-muted">N/A</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="action-buttons" style="display: flex; gap: 0.5rem;">
+                        <form method="POST" action="{{ url_for('admin.approve_user', user_id=user.id) }}">
+                            <button class="btn btn-primary" type="submit" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Approve</button>
                         </form>
-                        <form method="POST" action="{{ url_for('admin.reject_user', user_id=user.id) }}" style="display:inline;">
-                            <button class="btn btn-outline" type="submit" style="color:var(--danger); border-color:var(--danger);">Reject</button>
+                        <form method="POST" action="{{ url_for('admin.reject_user', user_id=user.id) }}">
+                            <button class="btn btn-outline" type="submit" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; color:var(--danger); border-color:var(--danger);">Reject</button>
                         </form>
                     </div>
                 </td>

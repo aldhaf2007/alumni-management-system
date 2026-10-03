@@ -1,14 +1,12 @@
 {% extends "base_dashboard.html" %}
-{% block title %}Job & Internship Board | ABC University{% endblock %}
+{% block title %}Job & Internship Board | Aringar Anna College{% endblock %}
 {% block page_heading %}Career Board{% endblock %}
 
 {% block content %}
 <div class="dashboard-header">
     <h2>Career Opportunities</h2>
     <p>Explore jobs and internships posted by our alumni network.</p>
-    {% if current_user.role != 'student' %}
-        <a href="{{ url_for('jobs.post_job') }}" class="btn btn-primary" style="float:right; margin-top:-40px;">Post an Opportunity</a>
-    {% endif %}
+    <a href="{{ url_for('jobs.post_job') }}" class="btn btn-primary" style="float:right; margin-top:-40px;">Post an Opportunity</a>
 </div>
 
 <div class="directory-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
@@ -21,7 +19,7 @@
         <p style="margin-top: 0.5rem; font-size: 0.8rem;" class="text-muted">Posted by: {{ job.poster.name }}</p>
         
         <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-            {% if current_user.role == 'student' or current_user.role == 'alumni' %}
+            {% if current_user.role == 'alumni' %}
                 {% if current_user.id != job.posted_by %}
                 <a href="{{ url_for('jobs.apply_job', job_id=job.id) }}" class="btn btn-primary" style="font-size: 0.9rem;">Apply Now</a>
                 {% endif %}
@@ -29,6 +27,15 @@
             
             {% if current_user.id == job.posted_by or current_user.role == 'admin' %}
             <a href="{{ url_for('jobs.view_applications', job_id=job.id) }}" class="btn btn-outline" style="font-size: 0.9rem;">View Applications</a>
+            {% endif %}
+            
+            {% if current_user.id != job.posted_by and current_user.role != 'admin' %}
+            <form action="{{ url_for('alumni.report_item') }}" method="POST" style="display:inline;" onsubmit="return promptForReason(this)">
+                <input type="hidden" name="reported_type" value="Job">
+                <input type="hidden" name="reported_id" value="{{ job.id }}">
+                <input type="hidden" name="reason" class="reason-input">
+                <button type="submit" class="btn btn-outline" style="font-size: 0.9rem; border-color: var(--danger); color: var(--danger);">Report</button>
+            </form>
             {% endif %}
         </div>
     </div>
@@ -40,4 +47,15 @@
     </div>
     {% endfor %}
 </div>
+
+<script>
+function promptForReason(form) {
+    const reason = prompt("Please provide a reason for reporting this item:");
+    if (reason && reason.trim() !== "") {
+        form.querySelector('.reason-input').value = reason;
+        return true;
+    }
+    return false; // Cancel form submission
+}
+</script>
 {% endblock %}

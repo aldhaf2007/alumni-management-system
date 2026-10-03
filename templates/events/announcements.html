@@ -1,5 +1,5 @@
 {% extends "base_dashboard.html" %}
-{% block title %}News & Announcements | ABC University{% endblock %}
+{% block title %}News & Announcements | Aringar Anna College{% endblock %}
 {% block page_heading %}News Feed{% endblock %}
 
 {% block content %}
@@ -22,6 +22,17 @@
             Posted on {{ ann.created_at.strftime('%B %d, %Y') }} by {{ ann.author.name }}
         </p>
         <p>{{ ann.content }}</p>
+        
+        {% if current_user.id != ann.posted_by and current_user.role != 'admin' %}
+        <div style="margin-top: 1rem; text-align: right;">
+            <form action="{{ url_for('alumni.report_item') }}" method="POST" style="display:inline;" onsubmit="return promptForReason(this)">
+                <input type="hidden" name="reported_type" value="Announcement">
+                <input type="hidden" name="reported_id" value="{{ ann.id }}">
+                <input type="hidden" name="reason" class="reason-input">
+                <button type="submit" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.3rem 0.6rem; border-color: var(--danger); color: var(--danger);">Report</button>
+            </form>
+        </div>
+        {% endif %}
     </div>
     {% else %}
     <div style="text-align: center; padding: 4rem 2rem; background: #fff; border-radius: 8px; border: 1px dashed #cbd5e1;">
@@ -31,4 +42,15 @@
     </div>
     {% endfor %}
 </div>
+
+<script>
+function promptForReason(form) {
+    const reason = prompt("Please provide a reason for reporting this item:");
+    if (reason && reason.trim() !== "") {
+        form.querySelector('.reason-input').value = reason;
+        return true;
+    }
+    return false; // Cancel form submission
+}
+</script>
 {% endblock %}

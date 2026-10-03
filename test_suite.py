@@ -4,14 +4,17 @@ from extensions import db
 from models import User, Profile, Job, Event, JobApplication
 from extensions import db, bcrypt
 
+from config import Config
+
+class TestConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    WTF_CSRF_ENABLED = False
+
 class AppTestCase(unittest.TestCase):
     def setUp(self):
         # Create app in testing mode
-        self.app = create_app()
-        self.app.config['TESTING'] = True
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:' # Use in-memory DB for tests
-        self.app.config['WTF_CSRF_ENABLED'] = False
-        
+        self.app = create_app(TestConfig)
         self.client = self.app.test_client()
         
         with self.app.app_context():
@@ -28,10 +31,7 @@ class AppTestCase(unittest.TestCase):
             self.alumni.password_hash = bcrypt.generate_password_hash('alumni123').decode('utf-8')
             db.session.add(self.alumni)
             
-            # Student
-            self.student = User(name='Student Test', email='student_test@abc.edu', role='student', status='Approved')
-            self.student.password_hash = bcrypt.generate_password_hash('student123').decode('utf-8')
-            db.session.add(self.student)
+
             
             # Pending User
             self.pending = User(name='Pending Test', email='pending@abc.edu', role='alumni', status='Pending')
@@ -40,10 +40,8 @@ class AppTestCase(unittest.TestCase):
             
             db.session.commit()
             
-            # Save IDs
             self.admin_id = self.admin.id
             self.alumni_id = self.alumni.id
-            self.student_id = self.student.id
 
     def tearDown(self):
         with self.app.app_context():
@@ -85,14 +83,42 @@ class AppTestCase(unittest.TestCase):
         res = self.client.get('/admin/dashboard', follow_redirects=True)
         self.assertIn(b'Unauthorized access', res.data)
         self.logout()
-        
-        # Student login
-        self.login('student_test@abc.edu', 'student123')
-        # Ensure student can't access alumni directory directly without standard redirection?
-        # Wait, student can access student directory.
-        res = self.client.get('/student/directory')
-        self.assertEqual(res.status_code, 200)
         self.logout()
+
+    def test_registration(self):
+        # Register a new alumni with WEAK password should fail
+        res = self.client.post('/auth/register', data={
+            'name': 'Registration Test',
+            'email': 'regtest@aringaranna.edu',
+            'password': 'weak',
+            'batch': '2023',
+            'department': 'Mechanical Engineering'
+        }, follow_redirects=True)
+        self.assertIn(b'Password must be at least 8 characters', res.data)
+
+        # Register a new alumni with STRONG password
+        res = self.client.post('/auth/register', data={
+            'name': 'Registration Test',
+            'email': 'regtest@aringaranna.edu',
+            'password': 'StrongPassword1',
+            'batch': '2023',
+            'department': 'Mechanical Engineering',
+            'company': 'Auto Corp',
+            'designation': 'Engineer',
+            'location': 'Detroit, MI',
+            'skills': 'CAD, Python',
+            'bio': 'New graduate.'
+        }, follow_redirects=True)
+        self.assertIn(b'Registration successful', res.data)
+        
+        # Verify user and profile in DB
+        with self.app.app_context():
+            user = User.query.filter_by(email='regtest@aringaranna.edu').first()
+            self.assertIsNotNone(user)
+            self.assertEqual(user.status, 'Pending')
+            self.assertIsNotNone(user.profile)
+            self.assertEqual(user.profile.batch, '2023')
+            self.assertEqual(user.profile.company, 'Auto Corp')
 
     def test_admin_crud(self):
         self.login('admin_test@abc.edu', 'admin123')
@@ -101,7 +127,7 @@ class AppTestCase(unittest.TestCase):
         res = self.client.post('/admin/users/add', data={
             'name': 'New User',
             'email': 'new@abc.edu',
-            'password': 'password123',
+            'password': 'Password123',
             'role': 'alumni',
             'status': 'Approved'
         }, follow_redirects=True)
@@ -152,13 +178,6 @@ class AppTestCase(unittest.TestCase):
         res = self.client.get('/alumni/directory?batch=2020-2023&department=Computer Science')
         self.assertEqual(res.status_code, 200)
         self.assertIn(b'Alumni Test', res.data)
-        
-        # Student directory
-        self.logout()
-        self.login('student_test@abc.edu', 'student123')
-        res = self.client.get('/student/directory?department=Computer Science')
-        self.assertEqual(res.status_code, 200)
-        self.assertIn(b'Alumni Test', res.data)
 
     def test_jobs_and_events(self):
         self.login('alumni_test@abc.edu', 'alumni123')
@@ -197,8 +216,8 @@ class AppTestCase(unittest.TestCase):
             
         self.logout()
         
-        # Student applies for job and RSVPs
-        self.login('student_test@abc.edu', 'student123')
+        # Alumni applies for job and RSVPs
+        self.login('alumni_test@abc.edu', 'alumni123')
         
         # RSVP
         res = self.client.post(f'/events/{event_id}/rsvp', follow_redirects=True)

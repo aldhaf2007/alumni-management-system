@@ -1,0 +1,59 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Manage Feedback | Admin Dashboard{% endblock %}
+{% block page_heading %}User Feedback{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Feedback & Suggestions</h2>
+    <p>Review feedback submitted by alumni.</p>
+</div>
+
+<div class="glass" style="padding: 2rem;">
+    {% if feedbacks %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>User</th>
+                <th>Subject & Message</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fb in feedbacks %}
+            <tr>
+                <td style="white-space: nowrap;">{{ fb.created_at.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <strong>{{ fb.user.name }}</strong><br>
+                    <small class="text-muted">{{ fb.user.email }}</small>
+                </td>
+                <td style="max-width: 300px;">
+                    <strong>{{ fb.subject }}</strong><br>
+                    <small class="text-muted">{{ fb.message }}</small>
+                </td>
+                <td>
+                    {% if fb.status == 'Open' %}
+                        <span class="badge" style="border-color: var(--warning); color: var(--warning);">{{ fb.status }}</span>
+                    {% else %}
+                        <span class="badge" style="border-color: var(--success); color: var(--success);">{{ fb.status }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if fb.status == 'Open' %}
+                    <form method="POST" action="{{ url_for('admin.resolve_feedback', feedback_id=fb.id) }}">
+                        <button class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; border-color: var(--success); color: var(--success);" type="submit">Resolve</button>
+                    </form>
+                    {% else %}
+                    <span class="text-muted">Resolved</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-muted">No feedback submitted yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

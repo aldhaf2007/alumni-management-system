@@ -31,14 +31,21 @@ def login():
             # Redirect based on role if no specific page was requested
             if user.role == 'admin':
                 return redirect(url_for('admin.dashboard'))
-            elif user.role == 'alumni':
-                return redirect(url_for('alumni.dashboard'))
             else:
-                return redirect(url_for('student.dashboard'))
+                return redirect(url_for('alumni.dashboard'))
         else:
             flash('Login unsuccessful. Please check email and password.', 'danger')
             
     return render_template('auth/login.html')
+
+import re
+
+def is_strong_password(password):
+    if not password or len(password) < 8: return False
+    if not re.search(r'[A-Z]', password): return False
+    if not re.search(r'[a-z]', password): return False
+    if not re.search(r'\d', password): return False
+    return True
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -49,11 +56,10 @@ def register():
         name = request.form.get('name')
         email = request.form.get('email')
         password = request.form.get('password')
-        role = request.form.get('role') # 'alumni' or 'student'
-        
-        # In MVP we only allow alumni and students to register. Admins are created manually.
-        if role not in ['alumni', 'student']:
-            flash('Invalid role selected.', 'danger')
+        role = 'alumni'
+            
+        if not is_strong_password(password):
+            flash('Password must be at least 8 characters and contain an uppercase letter, lowercase letter, and a number.', 'danger')
             return redirect(url_for('auth.register'))
             
         existing_user = User.query.filter_by(email=email).first()
@@ -65,6 +71,22 @@ def register():
         user = User(name=name, email=email, password_hash=hashed_password, role=role, status='Pending')
         
         db.session.add(user)
+        db.session.flush() # To get the user ID
+        
+        # Now create Profile with extra details
+        from models import Profile
+        profile = Profile(
+            user_id=user.id,
+            batch=request.form.get('batch'),
+            department=request.form.get('department'),
+            company=request.form.get('company'),
+            designation=request.form.get('designation'),
+            location=request.form.get('location'),
+            skills=request.form.get('skills'),
+            bio=request.form.get('bio')
+        )
+        db.session.add(profile)
+        
         db.session.commit()
         
         flash('Registration successful! Please wait for admin approval before logging in.', 'success')

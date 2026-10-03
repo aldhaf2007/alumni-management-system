@@ -1,5 +1,5 @@
 {% extends "base_dashboard.html" %}
-{% block title %}Add User | ABC University{% endblock %}
+{% block title %}Add User | Aringar Anna College{% endblock %}
 {% block page_heading %}Add User{% endblock %}
 
 {% block content %}
@@ -20,12 +20,20 @@
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" required minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
+            <small id="passwordHelp" style="display:block; margin-top:5px; font-size:0.8rem; color:var(--text-muted); text-align:left;">
+                Password must contain at least:
+                <ul style="margin-left: 20px; margin-top: 5px; list-style-type: disc;">
+                    <li id="req-length">8 characters</li>
+                    <li id="req-upper">1 uppercase letter</li>
+                    <li id="req-lower">1 lowercase letter</li>
+                    <li id="req-num">1 number</li>
+                </ul>
+            </small>
         </div>
         <div class="form-group">
             <label for="role">Role</label>
             <select id="role" name="role" required>
-                <option value="student">Student</option>
                 <option value="alumni">Alumni</option>
                 <option value="admin">Admin</option>
             </select>
@@ -41,4 +49,14 @@
         <button type="submit" class="btn btn-primary btn-block">Create User</button>
     </form>
 </div>
+
+<script>
+document.getElementById('password').addEventListener('input', function() {
+    const pwd = this.value;
+    document.getElementById('req-length').style.color = pwd.length >= 8 ? 'var(--success)' : 'inherit';
+    document.getElementById('req-upper').style.color = /[A-Z]/.test(pwd) ? 'var(--success)' : 'inherit';
+    document.getElementById('req-lower').style.color = /[a-z]/.test(pwd) ? 'var(--success)' : 'inherit';
+    document.getElementById('req-num').style.color = /\d/.test(pwd) ? 'var(--success)' : 'inherit';
+});
+</script>
 {% endblock %}

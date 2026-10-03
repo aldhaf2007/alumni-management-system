@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Register | ABC Alumni{% endblock %}
+{% block title %}Register | Aringar Anna College Alumni{% endblock %}
 
 {% block content %}
 <div class="auth-container">
@@ -7,29 +7,81 @@
         <h2>Join the Network</h2>
         <p>Create your account today</p>
         <form method="POST" action="{{ url_for('auth.register') }}">
+            <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; font-size: 1.1rem; color: var(--primary-color);">Account Details</h3>
             <div class="form-group">
-                <label for="name">Full Name</label>
+                <label for="name">Full Name <span class="text-danger">*</span></label>
                 <input type="text" id="name" name="name" required placeholder="Enter your full name">
             </div>
             <div class="form-group">
-                <label for="email">Email Address</label>
+                <label for="email">Email Address <span class="text-danger">*</span></label>
                 <input type="email" id="email" name="email" required placeholder="Enter your email">
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required placeholder="Create a password">
+                <label for="password">Password <span class="text-danger">*</span></label>
+                <input type="password" id="password" name="password" required placeholder="Create a password" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
+                <small id="passwordHelp" style="display:block; margin-top:5px; font-size:0.8rem; color:var(--text-muted); text-align:left;">
+                    Password must contain at least:
+                    <ul style="margin-left: 20px; margin-top: 5px; list-style-type: disc;">
+                        <li id="req-length">8 characters</li>
+                        <li id="req-upper">1 uppercase letter</li>
+                        <li id="req-lower">1 lowercase letter</li>
+                        <li id="req-num">1 number</li>
+                    </ul>
+                </small>
             </div>
+
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem; color: var(--primary-color);">Alumni Profile Details</h3>
+            
+            <div class="form-group" style="display: flex; gap: 1rem;">
+                <div style="flex: 1;">
+                    <label for="batch">Graduation Batch <span class="text-danger">*</span></label>
+                    <input type="text" id="batch" name="batch" required placeholder="e.g. 2020">
+                </div>
+                <div style="flex: 1;">
+                    <label for="department">Department <span class="text-danger">*</span></label>
+                    <input type="text" id="department" name="department" required placeholder="e.g. Computer Science">
+                </div>
+            </div>
+
+            <div class="form-group" style="display: flex; gap: 1rem;">
+                <div style="flex: 1;">
+                    <label for="company">Current Company</label>
+                    <input type="text" id="company" name="company" placeholder="e.g. Tech Corp">
+                </div>
+                <div style="flex: 1;">
+                    <label for="designation">Designation</label>
+                    <input type="text" id="designation" name="designation" placeholder="e.g. Software Engineer">
+                </div>
+            </div>
+
             <div class="form-group">
-                <label for="role">I am a...</label>
-                <select id="role" name="role" required>
-                    <option value="" disabled selected>Select your role</option>
-                    <option value="student">Current Student</option>
-                    <option value="alumni">Alumni</option>
-                </select>
+                <label for="location">Current Location</label>
+                <input type="text" id="location" name="location" placeholder="e.g. New York, NY">
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Register</button>
+
+            <div class="form-group">
+                <label for="skills">Skills (comma separated)</label>
+                <input type="text" id="skills" name="skills" placeholder="e.g. Python, Marketing, Management">
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Short Bio</label>
+                <textarea id="bio" name="bio" rows="3" placeholder="Tell us a little about yourself..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">Submit Application</button>
         </form>
         <p class="auth-link">Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a></p>
     </div>
 </div>
+
+<script>
+document.getElementById('password').addEventListener('input', function() {
+    const pwd = this.value;
+    document.getElementById('req-length').style.color = pwd.length >= 8 ? 'var(--success)' : 'inherit';
+    document.getElementById('req-upper').style.color = /[A-Z]/.test(pwd) ? 'var(--success)' : 'inherit';
+    document.getElementById('req-lower').style.color = /[a-z]/.test(pwd) ? 'var(--success)' : 'inherit';
+    document.getElementById('req-num').style.color = /\d/.test(pwd) ? 'var(--success)' : 'inherit';
+});
+</script>
 {% endblock %}

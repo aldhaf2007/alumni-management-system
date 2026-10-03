@@ -1,5 +1,5 @@
 {% extends "base_dashboard.html" %}
-{% block title %}Edit User | ABC University{% endblock %}
+{% block title %}Edit User | Aringar Anna College{% endblock %}
 {% block page_heading %}Edit User{% endblock %}
 
 {% block content %}
@@ -21,7 +21,6 @@
         <div class="form-group">
             <label for="role">Role</label>
             <select id="role" name="role" required>
-                <option value="student" {% if user.role == 'student' %}selected{% endif %}>Student</option>
                 <option value="alumni" {% if user.role == 'alumni' %}selected{% endif %}>Alumni</option>
                 <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
             </select>

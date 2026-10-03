@@ -1,5 +1,5 @@
 {% extends "base_dashboard.html" %}
-{% block title %}Update Profile | ABC Alumni{% endblock %}
+{% block title %}Update Profile | Aringar Anna College Alumni{% endblock %}
 {% block page_heading %}My Profile{% endblock %}
 
 {% block content %}
@@ -10,7 +10,18 @@
 </div>
 
 <div class="glass" style="padding: 2rem; max-width: 800px; margin: 0 auto;">
-    <form method="POST" action="{{ url_for('alumni.profile') }}">
+    <form method="POST" action="{{ url_for('alumni.profile') }}" enctype="multipart/form-data">
+        
+        <div style="text-align: center; margin-bottom: 2rem;">
+            {% if profile.profile_picture %}
+                <img src="{{ url_for('static', filename='uploads/profile_pics/' + profile.profile_picture) }}" alt="Profile Picture" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--secondary-color); box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 1rem;">
+            {% endif %}
+            <div class="form-group" style="text-align: left; max-width: 400px; margin: 0 auto;">
+                <label for="profile_picture">Profile Picture</label>
+                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="padding: 0.5rem; background: transparent; border: 1px dashed rgba(0,0,0,0.2);">
+            </div>
+        </div>
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
                 <label for="batch">Batch (Year of Graduation)</label>

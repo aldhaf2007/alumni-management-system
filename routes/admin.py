@@ -71,6 +71,15 @@ def manage_users():
     users = User.query.all()
     return render_template('admin/users.html', users=users)
 
+import re
+
+def is_strong_password(password):
+    if not password or len(password) < 8: return False
+    if not re.search(r'[A-Z]', password): return False
+    if not re.search(r'[a-z]', password): return False
+    if not re.search(r'\d', password): return False
+    return True
+
 @admin_bp.route('/users/add', methods=['GET', 'POST'])
 def add_user():
     if request.method == 'POST':
@@ -80,6 +89,10 @@ def add_user():
         role = request.form.get('role')
         status = request.form.get('status')
         
+        if not is_strong_password(password):
+            flash('Password must be at least 8 characters and contain an uppercase letter, lowercase letter, and a number.', 'danger')
+            return redirect(url_for('admin.add_user'))
+            
         if User.query.filter_by(email=email).first():
             flash('Email already registered.', 'danger')
             return redirect(url_for('admin.add_user'))
@@ -136,7 +149,6 @@ def delete_user(user_id):
 def reports():
     # User Demographics
     total_alumni = User.query.filter_by(role='alumni').count()
-    total_students = User.query.filter_by(role='student').count()
     total_admins = User.query.filter_by(role='admin').count()
     
     # Account Status
@@ -161,8 +173,38 @@ def reports():
     dept_data = [d[1] for d in dept_distribution]
     
     return render_template('admin/reports.html',
-                           demographics=[total_alumni, total_students, total_admins],
+                           demographics=[total_alumni, total_admins],
                            statuses=[approved_users, pending_users, rejected_users],
                            engagement=[total_events, total_event_registrations, total_jobs, total_job_applications],
                            dept_labels=dept_labels,
                            dept_data=dept_data)
+
+@admin_bp.route('/feedback')
+def manage_feedback():
+    from models import Feedback
+    feedbacks = Feedback.query.order_by(Feedback.created_at.desc()).all()
+    return render_template('admin/feedback.html', feedbacks=feedbacks)
+
+@admin_bp.route('/feedback/<int:feedback_id>/resolve', methods=['POST'])
+def resolve_feedback(feedback_id):
+    from models import Feedback
+    fb = Feedback.query.get_or_404(feedback_id)
+    fb.status = 'Resolved'
+    db.session.commit()
+    flash('Feedback marked as resolved.', 'success')
+    return redirect(url_for('admin.manage_feedback'))
+
+@admin_bp.route('/content_reports')
+def manage_reports():
+    from models import Report
+    reports = Report.query.order_by(Report.created_at.desc()).all()
+    return render_template('admin/content_reports.html', reports=reports)
+
+@admin_bp.route('/content_reports/<int:report_id>/resolve', methods=['POST'])
+def resolve_report(report_id):
+    from models import Report
+    report = Report.query.get_or_404(report_id)
+    report.status = 'Resolved'
+    db.session.commit()
+    flash('Report marked as resolved.', 'success')
+    return redirect(url_for('admin.manage_reports'))

@@ -1,5 +1,5 @@
 {% extends "base_dashboard.html" %}
-{% block title %}Analytics & Reports | ABC University{% endblock %}
+{% block title %}Analytics & Reports | Aringar Anna College{% endblock %}
 {% block page_heading %}Analytics & Reports{% endblock %}
 
 {% block content %}
@@ -51,10 +51,10 @@
     new Chart(ctxDemo, {
         type: 'pie',
         data: {
-            labels: ['Alumni', 'Students', 'Admins'],
+            labels: ['Alumni', 'Admins'],
             datasets: [{
                 data: {{ demographics|tojson }},
-                backgroundColor: [primary, secondary, muted],
+                backgroundColor: [primary, secondary],
                 borderWidth: 0
             }]
         },

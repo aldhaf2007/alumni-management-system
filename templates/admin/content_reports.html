@@ -1,0 +1,63 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Manage Reports | Admin Dashboard{% endblock %}
+{% block page_heading %}Content Reports{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Content Reports</h2>
+    <p>Review and moderate content reported by users.</p>
+</div>
+
+<div class="glass" style="padding: 2rem;">
+    {% if reports %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Reporter</th>
+                <th>Reported Item</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td style="white-space: nowrap;">{{ report.created_at.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <strong>{{ report.reporter.name }}</strong><br>
+                    <small class="text-muted">{{ report.reporter.email }}</small>
+                </td>
+                <td>
+                    <span class="badge">{{ report.reported_type }}</span><br>
+                    <small>ID: {{ report.reported_id }}</small>
+                </td>
+                <td style="max-width: 250px;">
+                    <small class="text-muted">{{ report.reason }}</small>
+                </td>
+                <td>
+                    {% if report.status == 'Pending' %}
+                        <span class="badge" style="border-color: var(--danger); color: var(--danger);">{{ report.status }}</span>
+                    {% else %}
+                        <span class="badge" style="border-color: var(--success); color: var(--success);">{{ report.status }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if report.status == 'Pending' %}
+                    <form method="POST" action="{{ url_for('admin.resolve_report', report_id=report.id) }}">
+                        <button class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; border-color: var(--success); color: var(--success);" type="submit">Mark Resolved</button>
+                    </form>
+                    {% else %}
+                    <span class="text-muted">Resolved</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-muted">No content has been reported.</p>
+    {% endif %}
+</div>
+{% endblock %}

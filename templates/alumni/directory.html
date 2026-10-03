@@ -1,5 +1,5 @@
 {% extends "base_dashboard.html" %}
-{% block title %}Alumni Directory | ABC Alumni{% endblock %}
+{% block title %}Alumni Directory | Aringar Anna College Alumni{% endblock %}
 {% block page_heading %}Alumni Directory{% endblock %}
 
 {% block content %}
@@ -33,7 +33,14 @@
 <div class="directory-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
     {% for profile in profiles %}
     <div class="glass" style="padding: 1.5rem;">
-        <h3 style="margin-bottom: 0.5rem; color: var(--primary-color);">{{ profile.user.name }}</h3>
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+            {% if profile.profile_picture %}
+                <img src="{{ url_for('static', filename='uploads/profile_pics/' + profile.profile_picture) }}" alt="Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary-color);">
+            {% else %}
+                <i class="fas fa-user-circle" style="font-size:60px; color:#cbd5e1;"></i>
+            {% endif %}
+            <h3 style="margin: 0; color: var(--primary-color);">{{ profile.user.name }}</h3>
+        </div>
         <p><strong>Batch:</strong> {{ profile.batch or 'N/A' }}</p>
         <p><strong>Company:</strong> {{ profile.company or 'N/A' }}</p>
         <p><strong>Role:</strong> {{ profile.designation or 'N/A' }}</p>

@@ -17,10 +17,7 @@ def list_jobs():
 @jobs_bp.route('/jobs/post', methods=['GET', 'POST'])
 @login_required
 def post_job():
-    if current_user.role == 'student':
-        flash('Students cannot post jobs.', 'danger')
-        return redirect(url_for('jobs.list_jobs'))
-        
+
     if request.method == 'POST':
         title = request.form.get('title')
         description = request.form.get('description')

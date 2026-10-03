@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Welcome | ABC University Alumni Portal{% endblock %}
+{% block title %}Welcome | Aringar Anna College Alumni Portal{% endblock %}
 
 {% block content %}
 <div class="hero">
     <div class="hero-content">
         <h1>Welcome to the Alumni Association</h1>
-        <p>Connecting past, present, and future generations of ABC University. Discover mentorship, networking, and career opportunities within our esteemed global community.</p>
+        <p>Connecting past, present, and future generations of Aringar Anna College. Discover mentorship, networking, and career opportunities within our esteemed global community.</p>
         <div class="hero-actions">
             {% if not current_user.is_authenticated %}
                 <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-large">Join the Portal</a>
@@ -15,8 +15,6 @@
                     <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary btn-large">Explore Portal</a>
                 {% elif current_user.role == 'alumni' %}
                     <a href="{{ url_for('alumni.dashboard') }}" class="btn btn-primary btn-large">Explore Portal</a>
-                {% elif current_user.role == 'student' %}
-                    <a href="{{ url_for('student.dashboard') }}" class="btn btn-primary btn-large">Explore Portal</a>
                 {% else %}
                     <a href="{{ url_for('public.index') }}" class="btn btn-primary btn-large">Explore Portal</a>
                 {% endif %}
