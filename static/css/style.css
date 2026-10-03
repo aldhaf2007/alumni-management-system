@@ -307,8 +307,8 @@ a:hover {
 
 .auth-card {
     width: 100%;
-    max-width: 480px;
-    padding: 3rem;
+    max-width: 850px;
+    padding: 3.5rem;
 }
 
 .auth-card h2 {
