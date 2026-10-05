@@ -139,6 +139,10 @@ a:hover {
     gap: 8px;
 }
 
+.btn:active {
+    transform: scale(0.97);
+}
+
 .btn-primary {
     background: linear-gradient(135deg, var(--secondary-color), #f7b754);
     color: #1a1a1a;
@@ -217,10 +221,11 @@ a:hover {
 }
 
 .card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     box-shadow: 
-        0 12px 32px -4px rgba(0, 0, 0, 0.15),
-        0 0 1px 1px rgba(255, 255, 255, 0.9) inset;
+        0 20px 40px -10px rgba(0, 0, 0, 0.15),
+        0 0 1px 1px rgba(255, 255, 255, 0.95) inset;
+    background: rgba(255, 255, 255, 0.85);
 }
 
 /* Stagger animations for cards */
@@ -350,9 +355,10 @@ a:hover {
 
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
     outline: none;
-    border-color: rgba(15, 40, 98, 0.3);
+    border-color: rgba(15, 40, 98, 0.4);
     background: #FFFFFF;
-    box-shadow: 0 0 0 4px rgba(15, 40, 98, 0.08), 0 1px 2px rgba(0,0,0,0.02) inset;
+    box-shadow: 0 0 0 4px rgba(15, 40, 98, 0.1), 0 2px 5px rgba(0,0,0,0.05) inset;
+    transform: translateY(-2px);
 }
 
 .password-wrapper {
@@ -385,25 +391,30 @@ a:hover {
     border-collapse: separate;
     border-spacing: 0;
     margin-top: 1rem;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(255,255,255,0.5);
 }
 
 .data-table th, .data-table td {
-    padding: 1rem;
+    padding: 1.25rem 1rem;
     text-align: left;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .data-table tbody tr {
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .data-table tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.8);
-    transform: scale(1.005);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    background-color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px) scale(1.002);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+    position: relative;
+    z-index: 10;
 }
 
 .data-table th {

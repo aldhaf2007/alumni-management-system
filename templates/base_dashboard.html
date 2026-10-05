@@ -73,13 +73,20 @@
             color: rgba(255, 255, 255, 0.6);
             transition: color 0.3s ease;
         }
-        .sidebar-nav li a:hover, .sidebar-nav li a.active {
-            background: rgba(255,255,255,0.15);
+        .sidebar-nav li a:hover {
+            background: rgba(255,255,255,0.1);
             color: #ffffff;
             transform: translateX(4px);
         }
+        .sidebar-nav li a.active {
+            background: linear-gradient(90deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.02) 100%);
+            border-left: 3px solid var(--secondary-color);
+            color: #ffffff;
+            padding-left: calc(1rem - 3px); /* adjust padding for border */
+        }
         .sidebar-nav li a.active i, .sidebar-nav li a:hover i {
             color: var(--secondary-color);
+            transform: scale(1.1);
         }
         .sidebar-footer {
             padding: 1.5rem;
