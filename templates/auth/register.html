@@ -20,7 +20,10 @@
             </div>
             <div class="form-group">
                 <label for="password">Password <span class="text-danger">*</span></label>
-                <input type="password" id="password" name="password" required placeholder="Create a password" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" required placeholder="Create a password" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
+                    <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('password', this)"></i>
+                </div>
                 <small id="passwordHelp" style="display:block; margin-top:5px; font-size:0.8rem; color:var(--text-muted); text-align:left;">
                     Password must contain at least:
                     <ul style="margin-left: 20px; margin-top: 5px; list-style-type: disc;">
@@ -78,6 +81,19 @@
 </div>
 
 <script>
+function togglePasswordVisibility(inputId, iconElement) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') {
+        input.type = 'text';
+        iconElement.classList.remove('fa-eye');
+        iconElement.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        iconElement.classList.remove('fa-eye-slash');
+        iconElement.classList.add('fa-eye');
+    }
+}
+
 document.getElementById('password').addEventListener('input', function() {
     const pwd = this.value;
     document.getElementById('req-length').style.color = pwd.length >= 8 ? 'var(--success)' : 'inherit';

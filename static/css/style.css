@@ -355,6 +355,30 @@ a:hover {
     box-shadow: 0 0 0 4px rgba(15, 40, 98, 0.08), 0 1px 2px rgba(0,0,0,0.02) inset;
 }
 
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    padding-right: 40px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 1rem;
+    transition: color 0.2s ease;
+    z-index: 10;
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+}
+
 /* Tables */
 .data-table {
     width: 100%;
