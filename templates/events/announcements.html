@@ -23,16 +23,23 @@
         </p>
         <p>{{ ann.content }}</p>
         
-        {% if current_user.id != ann.posted_by and current_user.role != 'admin' %}
-        <div style="margin-top: 1rem; text-align: right;">
+        <div style="margin-top: 1rem; text-align: right; display: flex; justify-content: flex-end; gap: 0.5rem;">
+            {% if current_user.id != ann.posted_by and current_user.role != 'admin' %}
             <form action="{{ url_for('alumni.report_item') }}" method="POST" style="display:inline;" onsubmit="return promptForReason(this)">
                 <input type="hidden" name="reported_type" value="Announcement">
                 <input type="hidden" name="reported_id" value="{{ ann.id }}">
                 <input type="hidden" name="reason" class="reason-input">
                 <button type="submit" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.3rem 0.6rem; border-color: var(--danger); color: var(--danger);">Report</button>
             </form>
+            {% endif %}
+            
+            {% if current_user.id == ann.posted_by or current_user.role == 'admin' %}
+            <a href="{{ url_for('events.edit_announcement', ann_id=ann.id) }}" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.3rem 0.6rem; border-color: var(--secondary-color); color: var(--secondary-color);">Edit</a>
+            <form action="{{ url_for('events.delete_announcement', ann_id=ann.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
+                <button type="submit" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.3rem 0.6rem; border-color: var(--danger); color: var(--danger);">Delete</button>
+            </form>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
     {% else %}
     <div style="text-align: center; padding: 4rem 2rem; background: #fff; border-radius: 8px; border: 1px dashed #cbd5e1;">

@@ -32,6 +32,37 @@ def post_job():
         
     return render_template('jobs/post.html')
 
+@jobs_bp.route('/jobs/<int:job_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_job(job_id):
+    job = Job.query.get_or_404(job_id)
+    if current_user.id != job.posted_by and current_user.role != 'admin':
+        flash('Unauthorized to edit this job.', 'danger')
+        return redirect(url_for('jobs.list_jobs'))
+
+    if request.method == 'POST':
+        job.title = request.form.get('title')
+        job.description = request.form.get('description')
+        job.company = request.form.get('company')
+        job.location = request.form.get('location')
+        db.session.commit()
+        flash('Job updated successfully.', 'success')
+        return redirect(url_for('jobs.list_jobs'))
+
+    return render_template('jobs/edit.html', job=job)
+
+@jobs_bp.route('/jobs/<int:job_id>/delete', methods=['POST'])
+@login_required
+def delete_job(job_id):
+    job = Job.query.get_or_404(job_id)
+    if current_user.id != job.posted_by and current_user.role != 'admin':
+        flash('Unauthorized to delete this job.', 'danger')
+        return redirect(url_for('jobs.list_jobs'))
+
+    db.session.delete(job)
+    db.session.commit()
+    flash('Job deleted successfully.', 'success')
+    return redirect(url_for('jobs.list_jobs'))
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() == 'pdf'
 

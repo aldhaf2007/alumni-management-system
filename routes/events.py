@@ -57,6 +57,60 @@ def create_event():
         
     return render_template('events/create.html')
 
+@events_bp.route('/events/<int:event_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_event(event_id):
+    if current_user.role != 'admin':
+        flash('Only admins can edit events.', 'danger')
+        return redirect(url_for('events.list_events'))
+        
+    event = Event.query.get_or_404(event_id)
+    if request.method == 'POST':
+        event.title = request.form.get('title')
+        event.description = request.form.get('description')
+        event.location = request.form.get('location')
+        
+        from datetime import datetime
+        try:
+            event.date = datetime.strptime(request.form.get('date'), '%Y-%m-%d').date()
+        except (ValueError, TypeError):
+            pass
+            
+        try:
+            event.time = datetime.strptime(request.form.get('time'), '%H:%M').time()
+        except (ValueError, TypeError):
+            pass
+
+        import os
+        from werkzeug.utils import secure_filename
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename != '':
+                image_filename = secure_filename(f"event_{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}")
+                upload_path = os.path.join('static', 'uploads', 'event_pics')
+                os.makedirs(upload_path, exist_ok=True)
+                file.save(os.path.join(upload_path, image_filename))
+                event.image = image_filename
+                
+        db.session.commit()
+        flash('Event updated successfully.', 'success')
+        return redirect(url_for('events.list_events'))
+
+    return render_template('events/edit.html', event=event)
+
+@events_bp.route('/events/<int:event_id>/delete', methods=['POST'])
+@login_required
+def delete_event(event_id):
+    if current_user.role != 'admin':
+        flash('Only admins can delete events.', 'danger')
+        return redirect(url_for('events.list_events'))
+        
+    event = Event.query.get_or_404(event_id)
+    db.session.delete(event)
+    db.session.commit()
+    flash('Event deleted successfully.', 'success')
+    return redirect(url_for('events.list_events'))
+
 @events_bp.route('/announcements')
 @login_required
 def list_announcements():
@@ -82,6 +136,37 @@ def create_announcement():
         return redirect(url_for('events.list_announcements'))
         
     return render_template('events/create_announcement.html')
+
+@events_bp.route('/announcements/<int:ann_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_announcement(ann_id):
+    if current_user.role != 'admin':
+        flash('Only admins can edit announcements.', 'danger')
+        return redirect(url_for('events.list_announcements'))
+        
+    ann = Announcement.query.get_or_404(ann_id)
+    if request.method == 'POST':
+        ann.title = request.form.get('title')
+        ann.content = request.form.get('content')
+        ann.type = request.form.get('type')
+        db.session.commit()
+        flash('Announcement updated.', 'success')
+        return redirect(url_for('events.list_announcements'))
+
+    return render_template('events/edit_announcement.html', announcement=ann)
+
+@events_bp.route('/announcements/<int:ann_id>/delete', methods=['POST'])
+@login_required
+def delete_announcement(ann_id):
+    if current_user.role != 'admin':
+        flash('Only admins can delete announcements.', 'danger')
+        return redirect(url_for('events.list_announcements'))
+        
+    ann = Announcement.query.get_or_404(ann_id)
+    db.session.delete(ann)
+    db.session.commit()
+    flash('Announcement deleted.', 'success')
+    return redirect(url_for('events.list_announcements'))
 
 @events_bp.route('/events/<int:event_id>/rsvp', methods=['POST'])
 @login_required

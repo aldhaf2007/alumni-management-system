@@ -1,0 +1,34 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Edit Job | Aringar Anna College{% endblock %}
+{% block page_heading %}Edit Job Posting{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Edit Job Posting</h2>
+    <a href="{{ url_for('jobs.list_jobs') }}" class="btn btn-outline" style="float: right;">Back to Jobs</a>
+    <div style="clear: both;"></div>
+</div>
+
+<div class="card glass" style="padding: 2.5rem; max-width: 600px; margin: 0 auto;">
+    <form method="POST" action="{{ url_for('jobs.edit_job', job_id=job.id) }}">
+        <div class="form-group">
+            <label for="title">Job Title</label>
+            <input type="text" id="title" name="title" required value="{{ job.title }}">
+        </div>
+        <div class="form-group">
+            <label for="company">Company</label>
+            <input type="text" id="company" name="company" required value="{{ job.company }}">
+        </div>
+        <div class="form-group">
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" required value="{{ job.location }}">
+        </div>
+        <div class="form-group">
+            <label for="description">Job Description</label>
+            <textarea id="description" name="description" rows="6" required>{{ job.description }}</textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">Update Job</button>
+    </form>
+</div>
+{% endblock %}

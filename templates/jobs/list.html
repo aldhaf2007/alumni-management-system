@@ -27,6 +27,10 @@
             
             {% if current_user.id == job.posted_by or current_user.role == 'admin' %}
             <a href="{{ url_for('jobs.view_applications', job_id=job.id) }}" class="btn btn-outline" style="font-size: 0.9rem;">View Applications</a>
+            <a href="{{ url_for('jobs.edit_job', job_id=job.id) }}" class="btn btn-outline" style="font-size: 0.9rem; border-color: var(--secondary-color); color: var(--secondary-color);">Edit</a>
+            <form action="{{ url_for('jobs.delete_job', job_id=job.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this job?');">
+                <button type="submit" class="btn btn-outline" style="font-size: 0.9rem; border-color: var(--danger); color: var(--danger);">Delete</button>
+            </form>
             {% endif %}
             
             {% if current_user.id != job.posted_by and current_user.role != 'admin' %}
