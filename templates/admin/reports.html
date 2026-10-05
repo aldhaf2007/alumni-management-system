@@ -11,29 +11,80 @@
 <!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+    <!-- KPI 1 -->
+    <div class="card glass" style="padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
+        <div style="background: rgba(15, 40, 98, 0.1); width: 64px; height: 64px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-user-graduate" style="font-size: 1.8rem; color: var(--primary-color);"></i>
+        </div>
+        <div>
+            <h3 style="margin: 0; font-size: 2.2rem; line-height: 1.1; color: var(--primary-color);">{{ demographics[0] }}</h3>
+            <p class="text-muted" style="font-size: 0.85rem; margin: 0; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Total Alumni</p>
+        </div>
+    </div>
+    <!-- KPI 2 -->
+    <div class="card glass" style="padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
+        <div style="background: rgba(249, 160, 27, 0.15); width: 64px; height: 64px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-briefcase" style="font-size: 1.8rem; color: var(--secondary-color);"></i>
+        </div>
+        <div>
+            <h3 style="margin: 0; font-size: 2.2rem; line-height: 1.1; color: var(--primary-color);">{{ engagement[2] }}</h3>
+            <p class="text-muted" style="font-size: 0.85rem; margin: 0; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Active Jobs</p>
+        </div>
+    </div>
+    <!-- KPI 3 -->
+    <div class="card glass" style="padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
+        <div style="background: rgba(40, 167, 69, 0.1); width: 64px; height: 64px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-calendar-alt" style="font-size: 1.8rem; color: var(--success);"></i>
+        </div>
+        <div>
+            <h3 style="margin: 0; font-size: 2.2rem; line-height: 1.1; color: var(--primary-color);">{{ engagement[0] }}</h3>
+            <p class="text-muted" style="font-size: 0.85rem; margin: 0; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Total Events</p>
+        </div>
+    </div>
+    <!-- KPI 4 -->
+    <div class="card glass" style="padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
+        <div style="background: rgba(220, 53, 69, 0.1); width: 64px; height: 64px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-user-clock" style="font-size: 1.8rem; color: var(--danger);"></i>
+        </div>
+        <div>
+            <h3 style="margin: 0; font-size: 2.2rem; line-height: 1.1; color: var(--primary-color);">{{ statuses[1] }}</h3>
+            <p class="text-muted" style="font-size: 0.85rem; margin: 0; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Pending Users</p>
+        </div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem;">
     <!-- Demographics Chart -->
-    <div class="card" style="padding: 1.5rem;">
+    <div class="card glass" style="padding: 1.5rem; display: flex; flex-direction: column; align-items: center;">
         <h3 style="text-align: center; margin-bottom: 1rem; color: var(--primary-color);">User Demographics</h3>
-        <canvas id="demographicsChart"></canvas>
+        <div style="position: relative; height: 250px; width: 100%; display: flex; justify-content: center;">
+            <canvas id="demographicsChart"></canvas>
+        </div>
     </div>
 
     <!-- Account Status Chart -->
-    <div class="card" style="padding: 1.5rem;">
+    <div class="card glass" style="padding: 1.5rem; display: flex; flex-direction: column; align-items: center;">
         <h3 style="text-align: center; margin-bottom: 1rem; color: var(--primary-color);">Account Statuses</h3>
-        <canvas id="statusChart"></canvas>
+        <div style="position: relative; height: 250px; width: 100%; display: flex; justify-content: center;">
+            <canvas id="statusChart"></canvas>
+        </div>
     </div>
 
     <!-- Engagement Metrics -->
-    <div class="card" style="padding: 1.5rem;">
-        <h3 style="text-align: center; margin-bottom: 1rem; color: var(--primary-color);">Engagement</h3>
-        <canvas id="engagementChart"></canvas>
+    <div class="card glass" style="padding: 1.5rem;">
+        <h3 style="text-align: center; margin-bottom: 1rem; color: var(--primary-color);">Platform Engagement</h3>
+        <div style="position: relative; height: 250px; width: 100%;">
+            <canvas id="engagementChart"></canvas>
+        </div>
     </div>
 
     <!-- Department Distribution -->
-    <div class="card" style="padding: 1.5rem;">
+    <div class="card glass" style="padding: 1.5rem;">
         <h3 style="text-align: center; margin-bottom: 1rem; color: var(--primary-color);">Alumni by Department</h3>
-        <canvas id="deptChart"></canvas>
+        <div style="position: relative; height: 250px; width: 100%;">
+            <canvas id="deptChart"></canvas>
+        </div>
     </div>
 </div>
 
@@ -55,10 +106,17 @@
             datasets: [{
                 data: {{ demographics|tojson }},
                 backgroundColor: [primary, secondary],
-                borderWidth: 0
+                borderWidth: 0,
+                hoverOffset: 4
             }]
         },
-        options: { responsive: true }
+        options: { 
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
     });
 
     // Statuses
@@ -70,10 +128,18 @@
             datasets: [{
                 data: {{ statuses|tojson }},
                 backgroundColor: [success, warning, danger],
-                borderWidth: 0
+                borderWidth: 0,
+                hoverOffset: 4
             }]
         },
-        options: { responsive: true }
+        options: { 
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
     });
 
     // Engagement & Participation
@@ -86,13 +152,14 @@
                 label: 'Total Count',
                 data: {{ engagement|tojson }},
                 backgroundColor: [primary, success, secondary, warning],
-                borderRadius: 4
+                borderRadius: 6
             }]
         },
         options: { 
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } }
             },
             plugins: {
                 legend: { display: false }
@@ -110,13 +177,14 @@
                 label: 'Total Alumni',
                 data: {{ dept_data|tojson }},
                 backgroundColor: primary,
-                borderRadius: 4
+                borderRadius: 6
             }]
         },
         options: { 
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } }
             },
             plugins: {
                 legend: { display: false }
