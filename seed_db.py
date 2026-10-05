@@ -1,12 +1,12 @@
 import random
 from datetime import datetime, timedelta
-from werkzeug.security import generate_password_hash
 from app import create_app
-from extensions import db
+from extensions import db, bcrypt
 from models import User, Profile, Job, Event, Announcement, Feedback
 
-def seed_database():
-    app = create_app()
+def seed_database(app=None):
+    if app is None:
+        app = create_app()
     with app.app_context():
         print("Starting database seeding...")
         
@@ -27,7 +27,7 @@ def seed_database():
             admin = User(
                 name='System Admin',
                 email='admin@aringaranna.edu',
-                password_hash=generate_password_hash('admin123'),
+                password_hash=bcrypt.generate_password_hash('admin123').decode('utf-8'),
                 role='admin',
                 status='Approved'
             )
@@ -49,7 +49,7 @@ def seed_database():
             user = User(
                 name=data['name'],
                 email=data['email'],
-                password_hash=generate_password_hash('Password@123'),
+                password_hash=bcrypt.generate_password_hash('Password@123').decode('utf-8'),
                 role='alumni',
                 status='Approved'  # Automatically approved for seeding
             )

@@ -27,11 +27,12 @@ def create_app(config_class=Config):
     app.register_blueprint(events_bp)
     app.register_blueprint(jobs_bp)
 
-    # Register CLI commands or other hooks here
-    @app.before_request
-    def create_tables():
-        # In a real app, use Flask-Migrate. For this MVP, we can auto-create.
-        pass
+    with app.app_context():
+        db.create_all()
+        from models import User
+        if not User.query.first():
+            from seed_db import seed_database
+            seed_database(app)
 
     return app
 
