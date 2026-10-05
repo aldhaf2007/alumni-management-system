@@ -23,7 +23,17 @@
         {% endif %}
         
         <div style="padding: 1.5rem;">
-            <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">{{ event.title }}</h3>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                <h3 style="color: var(--primary-color); margin: 0; padding-right: 1rem;">{{ event.title }}</h3>
+                <div style="display: flex; gap: 0.25rem;">
+                    {% if current_user.role == 'admin' %}
+                    <a href="{{ url_for('events.edit_event', event_id=event.id) }}" class="action-icon edit-icon" title="Edit Event"><i class="fas fa-pen"></i></a>
+                    <form action="{{ url_for('events.delete_event', event_id=event.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this event?');">
+                        <button type="submit" class="action-icon delete-icon" title="Delete Event"><i class="fas fa-trash"></i></button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
             <p><strong>Date:</strong> {{ event.date.strftime('%B %d, %Y') if event.date else event.date }} at {{ event.time.strftime('%I:%M %p') if event.time else event.time }}</p>
             <p><strong>Location:</strong> {{ event.location }}</p>
             <p style="margin-top: 1rem; font-size: 0.9rem; min-height: 60px;" class="text-muted">{{ event.description }}</p>
@@ -36,13 +46,6 @@
                         <button type="submit" class="btn btn-primary" style="font-size: 0.9rem;">Register for Event</button>
                     {% endif %}
                 </form>
-                
-                {% if current_user.role == 'admin' %}
-                    <a href="{{ url_for('events.edit_event', event_id=event.id) }}" class="btn btn-outline" style="font-size: 0.9rem; border-color: var(--secondary-color); color: var(--secondary-color); margin-left: auto;">Edit</a>
-                    <form action="{{ url_for('events.delete_event', event_id=event.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this event?');">
-                        <button type="submit" class="btn btn-outline" style="font-size: 0.9rem; border-color: var(--danger); color: var(--danger);">Delete</button>
-                    </form>
-                {% endif %}
             </div>
         </div>
     </div>

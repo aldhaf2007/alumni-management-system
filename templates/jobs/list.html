@@ -11,8 +11,18 @@
 
 <div class="directory-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
     {% for job in jobs %}
-    <div class="card" style="padding: 1.5rem;">
-        <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">{{ job.title }}</h3>
+    <div class="card glass" style="padding: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+            <h3 style="color: var(--primary-color); margin: 0; padding-right: 1rem;">{{ job.title }}</h3>
+            <div style="display: flex; gap: 0.25rem;">
+                {% if current_user.id == job.posted_by or current_user.role == 'admin' %}
+                <a href="{{ url_for('jobs.edit_job', job_id=job.id) }}" class="action-icon edit-icon" title="Edit Job"><i class="fas fa-pen"></i></a>
+                <form action="{{ url_for('jobs.delete_job', job_id=job.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this job?');">
+                    <button type="submit" class="action-icon delete-icon" title="Delete Job"><i class="fas fa-trash"></i></button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
         <p><strong>Company:</strong> {{ job.company }}</p>
         <p><strong>Location:</strong> {{ job.location }}</p>
         <p style="margin-top: 1rem; font-size: 0.9rem;" class="text-muted">{{ job.description }}</p>
@@ -27,10 +37,6 @@
             
             {% if current_user.id == job.posted_by or current_user.role == 'admin' %}
             <a href="{{ url_for('jobs.view_applications', job_id=job.id) }}" class="btn btn-outline" style="font-size: 0.9rem;">View Applications</a>
-            <a href="{{ url_for('jobs.edit_job', job_id=job.id) }}" class="btn btn-outline" style="font-size: 0.9rem; border-color: var(--secondary-color); color: var(--secondary-color);">Edit</a>
-            <form action="{{ url_for('jobs.delete_job', job_id=job.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this job?');">
-                <button type="submit" class="btn btn-outline" style="font-size: 0.9rem; border-color: var(--danger); color: var(--danger);">Delete</button>
-            </form>
             {% endif %}
             
             {% if current_user.id != job.posted_by and current_user.role != 'admin' %}

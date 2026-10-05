@@ -139,8 +139,39 @@ a:hover {
     gap: 8px;
 }
 
-.btn:active {
-    transform: scale(0.97);
+.action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+}
+
+.action-icon.edit-icon {
+    color: var(--secondary-color);
+}
+.action-icon.edit-icon:hover {
+    background: rgba(249, 160, 27, 0.15);
+    transform: translateY(-2px);
+}
+
+.action-icon.delete-icon {
+    color: var(--danger);
+}
+.action-icon.delete-icon:hover {
+    background: rgba(220, 53, 69, 0.15);
+    transform: translateY(-2px);
+}
+
+.btn:active, .action-icon:active {
+    transform: scale(0.95);
 }
 
 .btn-primary {
