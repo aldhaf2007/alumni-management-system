@@ -36,7 +36,20 @@ def create_event():
         except (ValueError, TypeError):
             time_obj = None
             
-        event = Event(title=title, description=description, date=date_obj, time=time_obj, location=location, created_by=current_user.id)
+        import os
+        from werkzeug.utils import secure_filename
+        
+        image_filename = None
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename != '':
+                # Generate unique filename to avoid overwrites
+                image_filename = secure_filename(f"event_{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}")
+                upload_path = os.path.join('static', 'uploads', 'event_pics')
+                os.makedirs(upload_path, exist_ok=True)
+                file.save(os.path.join(upload_path, image_filename))
+        
+        event = Event(title=title, description=description, date=date_obj, time=time_obj, location=location, image=image_filename, created_by=current_user.id)
         db.session.add(event)
         db.session.commit()
         flash('Event created successfully.', 'success')

@@ -13,14 +13,30 @@
 
 <div class="directory-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
     {% for event in events %}
-    <div class="card" style="padding: 1.5rem;">
-        <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">{{ event.title }}</h3>
-        <p><strong>Date:</strong> {{ event.date.strftime('%B %d, %Y') if event.date else event.date }} at {{ event.time }}</p>
-        <p><strong>Location:</strong> {{ event.location }}</p>
-        <p style="margin-top: 1rem; font-size: 0.9rem;" class="text-muted">{{ event.description }}</p>
+    <div class="card glass" style="overflow: hidden; padding: 0;">
+        {% if event.image %}
+            <div style="width: 100%; height: 180px; background: url('{{ url_for('static', filename='uploads/event_pics/' + event.image) }}') center/cover;"></div>
+        {% else %}
+            <div style="width: 100%; height: 180px; background: linear-gradient(135deg, rgba(15, 40, 98, 0.8), rgba(247, 183, 84, 0.8)); display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-calendar-alt" style="font-size: 3rem; color: rgba(255,255,255,0.5);"></i>
+            </div>
+        {% endif %}
         
-        <div style="margin-top: 1.5rem;">
-            <button class="btn btn-outline" style="font-size: 0.9rem;" onclick="alert('RSVP feature coming soon!')">RSVP</button>
+        <div style="padding: 1.5rem;">
+            <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">{{ event.title }}</h3>
+            <p><strong>Date:</strong> {{ event.date.strftime('%B %d, %Y') if event.date else event.date }} at {{ event.time.strftime('%I:%M %p') if event.time else event.time }}</p>
+            <p><strong>Location:</strong> {{ event.location }}</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem; min-height: 60px;" class="text-muted">{{ event.description }}</p>
+            
+            <div style="margin-top: 1.5rem;">
+                <form action="{{ url_for('events.rsvp', event_id=event.id) }}" method="POST" style="display: inline;">
+                    {% if current_user in event.attendees %}
+                        <button type="button" class="btn btn-outline" style="font-size: 0.9rem; border-color: var(--success); color: var(--success);" disabled><i class="fas fa-check"></i> Registered</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-primary" style="font-size: 0.9rem;">RSVP</button>
+                    {% endif %}
+                </form>
+            </div>
         </div>
     </div>
     {% else %}
